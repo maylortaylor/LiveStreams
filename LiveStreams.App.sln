@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26430.13
 MinimumVisualStudioVersion = 15.0.26124.0
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ApiApp", "ApiApp\ApiApp.csproj", "{454C2629-032B-4EE3-AD7E-2B08A16C264D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LiveStreams.Api", "LiveStreams.Api\LiveStreams.Api.csproj", "{454C2629-032B-4EE3-AD7E-2B08A16C264D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClientApp", "ClientApp\ClientApp.csproj", "{3B48DD57-2BB6-4C48-BD05-5778F26FCE9C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LiveStreams.Web", "ClientApp\LiveStreams.Web.csproj", "{3B48DD57-2BB6-4C48-BD05-5778F26FCE9C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IdentityApp", "IdentityApp\IdentityApp.csproj", "{4D95FBB9-C49B-4D19-86EF-9F3E67382A3D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LiveStreams.IdentityServer", "LiveStreams.IdentityServer\LiveStreams.IdentityServer.csproj", "{4D95FBB9-C49B-4D19-86EF-9F3E67382A3D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
