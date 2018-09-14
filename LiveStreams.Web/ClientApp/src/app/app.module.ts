@@ -1,62 +1,47 @@
-import { BrowserModule } from '@angular/platform-browser';
-import { NgModule, APP_INITIALIZER } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
-import { RouterModule } from '@angular/router';
+import {BrowserModule} from '@angular/platform-browser';
+import {NgModule} from '@angular/core';
+import {FormsModule} from '@angular/forms';
+import {HttpClientModule} from '@angular/common/http';
 
-import { AppComponent } from './app.component';
-import { NavMenuComponent } from './nav-menu/nav-menu.component';
-import { HomeComponent } from './home/home.component';
-import { CounterComponent } from './counter/counter.component';
-import { FetchDataComponent } from './fetch-data/fetch-data.component';
-import { UnauthorizedComponent } from './unauthorized/unauthorized.component';
-import { ConfigurationService } from "./configuration/configuration.service";
+// Material
+import {MaterialModule} from './core/material/material.module';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 
-import { AuthModule, OidcSecurityService } from 'angular-auth-oidc-client';
-import { AuthService } from './services/auth.service';
+import {AppRoutingModule} from './app.routes';
+import {HttpClientService} from './core/index';
 
-const appInitializerFn = (appConfig: ConfigurationService) => {
-  return () => {
-    return appConfig.loadConfig();
-  };
-};
+import {AppComponent} from './app.component';
+import {CoreModule} from './core/core.module';
+import {PageNotFoundComponent} from './pageNotFound.component';
+import {NavMenuComponent} from './nav-menu/nav-menu.component';
+import {LoggerService} from './core/logger/logger.service';
+import {ConsoleLoggerService} from './core/logger/consoleLogger.service';
 
 @NgModule({
   declarations: [
     AppComponent,
-    NavMenuComponent,
-    HomeComponent,
-    CounterComponent,
-    FetchDataComponent,
-    UnauthorizedComponent
+    PageNotFoundComponent,
+    NavMenuComponent
+    //
+    //
   ],
   imports: [
-    BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
-    AuthModule.forRoot(),
+    BrowserModule.withServerTransition({appId: 'ng-cli-universal'}),
+    CoreModule,
     HttpClientModule,
     FormsModule,
-    RouterModule.forRoot([
-      { path: '', component: HomeComponent, pathMatch: 'full' },
-      { path: 'counter', component: CounterComponent },
-      { path: 'fetch-data', component: FetchDataComponent },
-      { path: 'unauthorized', component: UnauthorizedComponent }
-    ])
+
+    // Material
+    MaterialModule,
+    BrowserAnimationsModule,
+
+    // Routing
+    AppRoutingModule
   ],
   providers: [
-    { provide: 'ORIGIN_URL', useFactory: getBaseUrl },
-    AuthService,
-    OidcSecurityService,
-    ConfigurationService,
-    {
-      provide: APP_INITIALIZER,
-      useFactory: appInitializerFn,
-      multi: true,
-      deps: [ConfigurationService]
-    }],
+    HttpClientService,
+    {provide: LoggerService, useClass: ConsoleLoggerService}
+  ],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
-
-export function getBaseUrl() {
-  return document.getElementsByTagName('base')[0].href;
-}
+export class AppModule {}
