@@ -8,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Swashbuckle.AspNetCore.Swagger;
+using IdentityServer4.AccessTokenValidation;
 
 namespace LiveStreams.Api
 {
@@ -36,12 +37,24 @@ namespace LiveStreams.Api
             //         .AllowAnyMethod());
             // });
 
-            services.AddCors(o => o.AddPolicy("Access-Control-Allow-Origin", builder =>
+            services.AddCors(options =>
             {
-                builder.AllowAnyOrigin()
-                       .AllowAnyMethod()
-                       .AllowAnyHeader();
-            }));
+                options.AddPolicy("Access-Control-Allow-Origin",
+                    builder =>
+                    {
+                        builder
+                        .AllowAnyOrigin()
+                        .AllowAnyMethod()
+                        .AllowAnyHeader()
+                        .AllowCredentials();
+                    });
+            });
+            services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
+            .AddIdentityServerAuthentication(options =>
+            {
+                options.Authority = "http://localhost:5050";
+                options.ApiName = "LiveStreams.Api";
+            });
 
             services.AddAuthentication(options =>
             {
@@ -115,13 +128,6 @@ namespace LiveStreams.Api
             {
                 app.UseHsts();
             }
-
-            // add cors in middleware
-            // app.UseCors(builder => builder
-            //     .WithOrigins("http://localhost:5002")
-            //     // .AllowAnyOrigin()
-            //     .AllowAnyHeader()
-            //     .AllowAnyMethod());
 
             app.UseHttpsRedirection();
             app.UseAuthentication();

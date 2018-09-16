@@ -11,11 +11,21 @@ using LiveStreams.IdentityServer.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using IdentityServer4;
+using LiveStreams.IdentityServer.Models.Entities;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using AutoMapper;
+using System;
+using LiveStreams.IdentityServer.Helpers;
+using LiveStreams.IdentityServer.Auth;
 
 namespace LiveStreams.IdentityServer
 {
     public class Startup
     {
+        private const string SecretKey = "iNivDmHLpUA223sqsfhqGbMRdRj1PVkH"; // todo: get this from somewhere secure
+        private readonly SymmetricSecurityKey _signingKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(SecretKey));
         public IConfiguration Configuration { get; }
         public readonly IHostingEnvironment _environment;
         public Startup(IConfiguration configuration, IHostingEnvironment env)
@@ -36,13 +46,60 @@ namespace LiveStreams.IdentityServer
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            // Add framework services.
+            services.AddSingleton<IJwtFactory, JwtFactory>();
+
+            // Add application database
             services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseMySql(Configuration.GetConnectionString("DefaultConnection")));
+                options.UseMySql(Configuration.GetConnectionString("DefaultConnection"))
+            );
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
+
+            // Get options from app settings
+            var jwtAppSettingOptions = Configuration.GetSection(nameof(JwtIssuerOptions));
+
+            // Configure JwtIssuerOptions
+            services.Configure<JwtIssuerOptions>(options =>
+            {
+                options.Issuer = jwtAppSettingOptions[nameof(JwtIssuerOptions.Issuer)];
+                options.Audience = jwtAppSettingOptions[nameof(JwtIssuerOptions.Audience)];
+                options.SigningCredentials = new SigningCredentials(_signingKey, SecurityAlgorithms.HmacSha256);
+            });
+
+            var tokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuer = true,
+                ValidIssuer = jwtAppSettingOptions[nameof(JwtIssuerOptions.Issuer)],
+
+                ValidateAudience = true,
+                ValidAudience = jwtAppSettingOptions[nameof(JwtIssuerOptions.Audience)],
+
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = _signingKey,
+
+                RequireExpirationTime = false,
+                ValidateLifetime = true,
+                ClockSkew = TimeSpan.Zero
+            };
+
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(configureOptions =>
+              {
+                  configureOptions.ClaimsIssuer = jwtAppSettingOptions[nameof(JwtIssuerOptions.Issuer)];
+                  configureOptions.TokenValidationParameters = tokenValidationParameters;
+                  configureOptions.SaveToken = true;
+              });
+
+            // api user claim policy
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("ApiUser", policy => policy.RequireClaim(Constants.Strings.JwtClaimIdentifiers.Rol, Constants.Strings.JwtClaims.ApiAccess));
+            });
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
@@ -53,20 +110,24 @@ namespace LiveStreams.IdentityServer
             var migrationsAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
 
             services.AddIdentityServer()
-                .AddDeveloperSigningCredential()
-                .AddAspNetIdentity<ApplicationUser>()
-                .AddConfigurationStore(options =>
-                {
-                    options.ConfigureDbContext = builder =>
-                        builder.UseMySql(Configuration.GetConnectionString("DefaultConnection"),
-                            db => db.MigrationsAssembly(migrationsAssembly));
-                })
-                .AddOperationalStore(options =>
-                {
-                    options.ConfigureDbContext = builder =>
-                        builder.UseMySql(Configuration.GetConnectionString("DefaultConnection"),
-                            db => db.MigrationsAssembly(migrationsAssembly));
-                });
+                .AddInMemoryClients(Config.GetClients(Configuration))
+                .AddInMemoryIdentityResources(Config.GetIdentityResources())
+                .AddInMemoryApiResources(Config.GetApiResources())
+                .AddTestUsers(Config.GetTestUsers())
+                .AddDeveloperSigningCredential();
+            // .AddAspNetIdentity<ApplicationUser>()
+            // .AddConfigurationStore(options =>
+            // {
+            //     options.ConfigureDbContext = builder =>
+            //         builder.UseMySql(Configuration.GetConnectionString("DefaultConnection"),
+            //             db => db.MigrationsAssembly(migrationsAssembly));
+            // })
+            // .AddOperationalStore(options =>
+            // {
+            //     options.ConfigureDbContext = builder =>
+            //         builder.UseMySql(Configuration.GetConnectionString("DefaultConnection"),
+            //             db => db.MigrationsAssembly(migrationsAssembly));
+            // });
 
             services.AddAuthentication().AddTwitter(twitterOptions =>
             {
@@ -79,6 +140,8 @@ namespace LiveStreams.IdentityServer
                 googleOptions.ClientId = Configuration["Authentication:Google:ClientId"];
                 googleOptions.ClientSecret = Configuration["Authentication:Google:ClientSecret"];
             });
+
+            services.AddAutoMapper();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

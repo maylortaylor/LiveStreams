@@ -1,5 +1,5 @@
 ﻿using System;
-using LiveStreams.IdentityServer.Data.Migrations.IdentityServer;
+// using LiveStreams.IdentityServer.Data.Migrations.IdentityServer;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
@@ -19,7 +19,7 @@ namespace LiveStreams.IdentityServer
 
                 try
                 {
-                    IdentityServerDatabaseInitialization.InitializeDatabase(services);
+                    // IdentityServerDatabaseInitialization.InitializeDatabase(services);
                 }
                 catch (Exception ex)
                 {
