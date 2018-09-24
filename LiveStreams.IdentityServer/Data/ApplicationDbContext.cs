@@ -15,7 +15,7 @@ namespace LiveStreams.IdentityServer.Data
             : base(options)
         {
         }
-        public DbSet<ChannelModel> Channels { get; set; }
+        public DbSet<PersonModel> Persons { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

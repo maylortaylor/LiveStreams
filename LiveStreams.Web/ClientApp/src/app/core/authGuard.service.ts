@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {
   CanActivate,
   CanActivateChild,
@@ -9,37 +9,31 @@ import {
   RouterStateSnapshot
 } from '@angular/router';
 
-import { UserProfileService } from './userProfile.service';
+import {UserService} from '../shared/services/user.service';
 
 @Injectable()
-export class AuthGuard implements CanActivate, CanActivateChild, CanLoad {
-  constructor(private userProfileService: UserProfileService, private router: Router) { }
+export class AuthGuard implements CanActivate, CanActivateChild {
+  constructor(private userService: UserService, private router: Router) {}
 
-  canLoad(route: Route) {
-    if (this.userProfileService.isLoggedIn) {
-      return true;
+  // canLoad(route: Route) {
+  //   if (this.userService.isLoggedIn()) {
+  //     return true;
+  //   }
+  //   let url = `/${route.path}`;
+  //   this.router.navigate(['/login'], {queryParams: {redirectTo: url}});
+  //   return this.userService.isLoggedIn;
+  // }
+
+  canActivate(next: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
+    if (!this.userService.isLoggedIn()) {
+      this.router.navigate(['/account/login']);
+      return false;
     }
-    let url = `/${route.path}`;
-    this.router.navigate(['/login'], { queryParams: { redirectTo: url } });
-    return this.userProfileService.isLoggedIn;
+
+    return true;
   }
 
-  canActivate(
-    next: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot
-  ) {
-    if (this.userProfileService.isLoggedIn) {
-      return true;
-    }
-    this.router.navigate(['/login'], { queryParams: { redirectTo: state.url } });
-
-    return false;
-  }
-
-  canActivateChild(
-    route: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot
-  ) {
+  canActivateChild(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
     return this.canActivate(route, state);
   }
 }

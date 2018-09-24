@@ -1,10 +1,10 @@
-import { NgModule, Optional, SkipSelf } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { RouterModule } from '@angular/router';
-import { throwIfAlreadyLoaded } from './moduleImportCheck';
-import { PreloadService } from './preload/preload.service';
-
+import {NgModule, Optional, SkipSelf} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {FormsModule} from '@angular/forms';
+import {RouterModule} from '@angular/router';
+import {throwIfAlreadyLoaded} from './moduleImportCheck';
+import {PreloadService} from './preload/preload.service';
+import {ConfigService} from './utils/config.service';
 // import { EntityService } from './entity.service';
 // import { ExceptionService } from './exception.service';
 // import { MessageService } from './message.service';
@@ -21,27 +21,33 @@ import { PreloadService } from './preload/preload.service';
 // exports: exports modules AND components/directives/pipes that other modules may want to use
 @NgModule({
   imports: [
-    CommonModule, FormsModule, RouterModule,
+    CommonModule,
+    FormsModule,
+    RouterModule
     // ModalModule, SpinnerModule, ToastModule
   ],
   exports: [
-    CommonModule, FormsModule, RouterModule,
+    CommonModule,
+    FormsModule,
+    RouterModule
     // ModalModule, SpinnerModule, ToastModule, [NavComponent]
   ],
   declarations: [
     //   NavComponent
-    ],
+  ],
   providers: [
     // EntityService,
     // ExceptionService,
     // MessageService,
+    ConfigService,
     PreloadService
   ]
-})export class CoreModule {
+})
+export class CoreModule {
   constructor(
     @Optional()
     @SkipSelf()
-      parentModule: CoreModule
+    parentModule: CoreModule
   ) {
     throwIfAlreadyLoaded(parentModule, 'CoreModule');
   }

@@ -49,6 +49,7 @@ namespace LiveStreams.Api
                         .AllowCredentials();
                     });
             });
+
             services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
             .AddIdentityServerAuthentication(options =>
             {
@@ -56,19 +57,18 @@ namespace LiveStreams.Api
                 options.ApiName = "LiveStreams.Api";
             });
 
-            services.AddAuthentication(options =>
-            {
-                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            }).AddJwtBearer(o =>
-            {
-                o.Authority = Configuration["IdentityServerAddress"];
-                o.Audience = "LiveStreams.Api";
-                o.RequireHttpsMetadata = false;
-            });
+            // services.AddAuthentication(options =>
+            // {
+            //     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            //     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            // }).AddJwtBearer(o =>
+            // {
+            //     o.Authority = Configuration["IdentityServerAddress"];
+            //     o.Audience = "LiveStreams.Api";
+            //     o.RequireHttpsMetadata = false;
+            // });
 
-            services.AddMvc()
-                .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+
 
             // add cors globally
             // services.Configure<MvcOptions>(options =>
@@ -98,6 +98,8 @@ namespace LiveStreams.Api
                 // var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 // c.IncludeXmlComments(xmlPath);
             });
+            services.AddMvc()
+                .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
 
         public void Configure(

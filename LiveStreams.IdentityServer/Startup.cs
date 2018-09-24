@@ -19,6 +19,7 @@ using AutoMapper;
 using System;
 using LiveStreams.IdentityServer.Helpers;
 using LiveStreams.IdentityServer.Auth;
+using Microsoft.AspNetCore.Http;
 
 namespace LiveStreams.IdentityServer
 {
@@ -46,6 +47,7 @@ namespace LiveStreams.IdentityServer
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors();
             services.AddSingleton<IJwtFactory, JwtFactory>();
 
             // Add application database
@@ -101,7 +103,22 @@ namespace LiveStreams.IdentityServer
                 options.AddPolicy("ApiUser", policy => policy.RequireClaim(Constants.Strings.JwtClaimIdentifiers.Rol, Constants.Strings.JwtClaims.ApiAccess));
             });
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddMvc(options =>
+            {
+                options.SslPort = 5050;
+                options.Filters.Add(new RequireHttpsAttribute());
+            }
+            ).SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+
+            services.AddAntiforgery(
+                    options =>
+                    {
+                        options.Cookie.Name = "_af";
+                        options.Cookie.HttpOnly = true;
+                        options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+                        options.HeaderName = "X-XSRF-TOKEN";
+                    }
+                );
 
             // Add application services.
             services.AddTransient<IEmailSender, AuthMessageSender>();
@@ -163,6 +180,14 @@ namespace LiveStreams.IdentityServer
             app.UseStaticFiles();
 
             app.UseIdentityServer();
+            // app.UseCors(
+            //     options => options.WithOrigins("http://localhost:5002").AllowAnyMethod()
+            // );
+            app.UseCors(builder => builder
+                .AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+                .AllowCredentials());
 
             app.UseMvc(routes =>
             {

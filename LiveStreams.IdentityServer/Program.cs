@@ -1,7 +1,11 @@
 ﻿using System;
+using System.IO;
+using System.Net;
+using System.Security.Cryptography.X509Certificates;
 // using LiveStreams.IdentityServer.Data.Migrations.IdentityServer;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
@@ -11,29 +15,44 @@ namespace LiveStreams.IdentityServer
     {
         public static void Main(string[] args)
         {
-            var host = CreateWebHostBuilder(args).Build();
+            var config = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddEnvironmentVariables()
+                .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")}.json", optional: false, reloadOnChange: true)
+                .AddJsonFile($"certificate.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")}.json", optional: true, reloadOnChange: true)
+                .Build();
 
-            using (var scope = host.Services.CreateScope())
-            {
-                var services = scope.ServiceProvider;
+            // certificateSettings comes from `certificate.json`
+            var certificateSettings = config.GetSection("certificateSettings");
+            string certificateFileName = certificateSettings.GetValue<string>("filename");
+            string certificatePassword = certificateSettings.GetValue<string>("password");
+            var certificate = new X509Certificate2(certificateFileName, certificatePassword);
 
-                try
-                {
-                    // IdentityServerDatabaseInitialization.InitializeDatabase(services);
-                }
-                catch (Exception ex)
-                {
-                    var logger = services.GetRequiredService<ILogger<Program>>();
-                    logger.LogError(ex, "An error occurred Initializing the DB.");
-                }
-            }
+            var host = new WebHostBuilder()
+                        .UseKestrel(
+                            options =>
+                            {
+                                options.AddServerHeader = false;
+                                options.Listen(IPAddress.Loopback, 5050, listenOptions =>
+                                {
+                                    listenOptions.UseHttps(certificate);
+                                });
+                            }
+                        )
+                        .ConfigureLogging(ConfigureLogger)
+                        .UseConfiguration(config)
+                        .UseContentRoot(Directory.GetCurrentDirectory())
+                        .UseStartup<Startup>()
+                        .UseUrls("https://localhost:5050")
+                        .Build();
 
             host.Run();
         }
-
-        public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
-            WebHost.CreateDefaultBuilder(args)
-                .UseUrls("http://localhost:5050")
-                .UseStartup<Startup>();
+        static void ConfigureLogger(WebHostBuilderContext ctx, ILoggingBuilder logging)
+        {
+            logging.AddConfiguration(ctx.Configuration.GetSection("Logging"));
+            logging.AddConsole();
+            logging.AddDebug();
+        }
     }
 }

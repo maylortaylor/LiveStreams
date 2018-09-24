@@ -9,6 +9,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Swashbuckle.AspNetCore.Swagger;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Http;
 
 namespace LiveStreams.Web
 {
@@ -31,9 +32,22 @@ namespace LiveStreams.Web
         public void ConfigureServices(IServiceCollection services)
         {
 
-            services.AddMvc()
-                    .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddMvc(options =>
+            {
+                options.SslPort = 5002;
+                options.Filters.Add(new RequireHttpsAttribute());
+            }
+            ).SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
+            services.AddAntiforgery(
+                     options =>
+                     {
+                         options.Cookie.Name = "_af";
+                         options.Cookie.HttpOnly = true;
+                         options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+                         options.HeaderName = "X-XSRF-TOKEN";
+                     }
+                 );
             // allows for instances of INodeServices in your application. 
             // INodeServices is the API through which .NET code can make calls into JavaScript that runs in a Node environment.
             services.AddNodeServices();

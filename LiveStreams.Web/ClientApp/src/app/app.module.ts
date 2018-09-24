@@ -12,16 +12,21 @@ import {HttpClientService} from './core/index';
 
 import {AppComponent} from './app.component';
 import {CoreModule} from './core/core.module';
+import {SharedModule} from './shared/shared.module';
+import {DashboardModule} from './dashboard/dashboard.module';
+import {AccountModule} from './account/account.module';
 import {PageNotFoundComponent} from './pageNotFound.component';
 import {NavMenuComponent} from './nav-menu/nav-menu.component';
 import {LoggerService} from './core/logger/logger.service';
 import {ConsoleLoggerService} from './core/logger/consoleLogger.service';
+// import {SpinnerComponent} from './spinner/spinner.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     PageNotFoundComponent,
     NavMenuComponent
+    // SpinnerComponent
     //
     //
   ],
@@ -30,7 +35,9 @@ import {ConsoleLoggerService} from './core/logger/consoleLogger.service';
     CoreModule,
     HttpClientModule,
     FormsModule,
-
+    AccountModule,
+    DashboardModule,
+    SharedModule,
     // Material
     MaterialModule,
     BrowserAnimationsModule,

@@ -1,7 +1,7 @@
-import { Component, Inject, OnInit } from '@angular/core';
-import { HttpClientService } from '../core';
-import { PreloadService } from '../core/preload/preload.service';
-import { WeatherForecast } from './weather.model';
+import {Component, Inject, OnInit} from '@angular/core';
+import {HttpClientService, GetOptions} from '../core';
+import {PreloadService} from '../core/preload/preload.service';
+import {WeatherForecast} from './weather.model';
 
 @Component({
   selector: 'app-weather',
@@ -12,7 +12,7 @@ export class WeatherComponent implements OnInit {
   public baseUrl: string;
   public apiUrl: string;
   constructor(
-    public http: HttpClientService, 
+    public http: HttpClientService,
     @Inject('BASE_URL') baseUrl: string,
     private preloadService: PreloadService<WeatherForecast[]>
   ) {
@@ -22,9 +22,16 @@ export class WeatherComponent implements OnInit {
   async ngOnInit() {
     this.forecasts = this.preloadService.data;
     if (!this.forecasts) {
-      this.forecasts = await this.http.get<WeatherForecast[]>({url: 'weather/', params: null});
+      this.getForecasts();
     }
   }
+
+  async getForecasts() {
+    let options: GetOptions = {
+      url: 'weather/'
+    };
+    this.http.get<WeatherForecast[]>(options).then(res => {
+      this.forecasts = res;
+    });
+  }
 }
-
-

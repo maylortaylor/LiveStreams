@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace LiveStreams.IdentityServer.Migrations
 {
-    public partial class initial : Migration
+    public partial class InitialMigration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -160,21 +160,21 @@ namespace LiveStreams.IdentityServer.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Channels",
+                name: "Persons",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    Id = table.Column<string>(nullable: false),
                     IdentityId = table.Column<string>(nullable: true),
+                    Gender = table.Column<string>(nullable: true),
+                    Zipcode = table.Column<string>(nullable: true),
                     Location = table.Column<string>(nullable: true),
-                    Locale = table.Column<string>(nullable: true),
-                    Gender = table.Column<string>(nullable: true)
+                    Locale = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Channels", x => x.Id);
+                    table.PrimaryKey("PK_Persons", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Channels_AspNetUsers_IdentityId",
+                        name: "FK_Persons_AspNetUsers_IdentityId",
                         column: x => x.IdentityId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
@@ -219,8 +219,8 @@ namespace LiveStreams.IdentityServer.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Channels_IdentityId",
-                table: "Channels",
+                name: "IX_Persons_IdentityId",
+                table: "Persons",
                 column: "IdentityId");
         }
 
@@ -242,7 +242,7 @@ namespace LiveStreams.IdentityServer.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "Channels");
+                name: "Persons");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");

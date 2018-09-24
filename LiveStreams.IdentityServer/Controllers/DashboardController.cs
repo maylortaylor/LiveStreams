@@ -37,7 +37,7 @@ namespace LiveStreams.IdentityServer.Controllers
             // retrieve the user info
             //HttpContext.User
             var userId = _caller.Claims.Single(c => c.Type == "id");
-            var customer = await _appDbContext.Channels.Include(c => c.Identity).SingleAsync(c => c.Identity.Id == userId.Value);
+            var customer = await _appDbContext.Persons.Include(c => c.Identity).SingleAsync(c => c.Identity.Id == userId.Value);
 
             return new OkObjectResult(new
             {
@@ -46,9 +46,7 @@ namespace LiveStreams.IdentityServer.Controllers
                 customer.Identity.LastName,
                 customer.Identity.PictureUrl,
                 customer.Identity.FacebookId,
-                customer.Location,
-                customer.Locale,
-                customer.Gender
+                customer.Zipcode
             });
         }
     }

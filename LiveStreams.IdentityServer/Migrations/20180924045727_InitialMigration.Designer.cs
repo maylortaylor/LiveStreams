@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LiveStreams.IdentityServer.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20180916171311_initial")]
-    partial class initial
+    [Migration("20180924045727_InitialMigration")]
+    partial class InitialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -81,9 +81,9 @@ namespace LiveStreams.IdentityServer.Migrations
                     b.ToTable("AspNetUsers");
                 });
 
-            modelBuilder.Entity("LiveStreams.IdentityServer.Models.Entities.ChannelModel", b =>
+            modelBuilder.Entity("LiveStreams.IdentityServer.Models.Entities.PersonModel", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<string>("Id")
                         .ValueGeneratedOnAdd();
 
                     b.Property<string>("Gender");
@@ -94,11 +94,13 @@ namespace LiveStreams.IdentityServer.Migrations
 
                     b.Property<string>("Location");
 
+                    b.Property<string>("Zipcode");
+
                     b.HasKey("Id");
 
                     b.HasIndex("IdentityId");
 
-                    b.ToTable("Channels");
+                    b.ToTable("Persons");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -208,7 +210,7 @@ namespace LiveStreams.IdentityServer.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("LiveStreams.IdentityServer.Models.Entities.ChannelModel", b =>
+            modelBuilder.Entity("LiveStreams.IdentityServer.Models.Entities.PersonModel", b =>
                 {
                     b.HasOne("LiveStreams.IdentityServer.Models.Entities.ApplicationUser", "Identity")
                         .WithMany()

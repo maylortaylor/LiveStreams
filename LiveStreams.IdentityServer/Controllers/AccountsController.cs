@@ -56,9 +56,12 @@ namespace LiveStreams.IdentityServer.Controllers
 
             var result = await _userManager.CreateAsync(userIdentity, model.Password);
 
-            if (!result.Succeeded) return new BadRequestObjectResult(Errors.AddErrorsToModelState(result, ModelState));
+            if (!result.Succeeded)
+            {
+                return new BadRequestObjectResult(Errors.AddErrorsToModelState(result, ModelState));
+            }
 
-            await _appDbContext.Channels.AddAsync(new ChannelModel { IdentityId = userIdentity.Id, Location = model.Location });
+            await _appDbContext.Persons.AddAsync(new PersonModel { IdentityId = userIdentity.Id, Zipcode = model.Zipcode });
             await _appDbContext.SaveChangesAsync();
 
             return new OkObjectResult("Account created");

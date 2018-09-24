@@ -7,6 +7,10 @@
 **/appsettings.staging.json
 **/appsettings.production.json
 
+**/certificate.development.json
+**/certificate.staging.json
+**/certificate.production.json
+
 # User-specific files
 *.suo
 *.user
