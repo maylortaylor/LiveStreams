@@ -1,7 +1,9 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Security.Cryptography.X509Certificates;
+using IdentityServer4AspNetIdentity;
 // using LiveStreams.IdentityServer.Data.Migrations.IdentityServer;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
@@ -45,6 +47,16 @@ namespace LiveStreams.IdentityServer
                         .UseStartup<Startup>()
                         .UseUrls("https://localhost:5050")
                         .Build();
+
+            var seed = args.Any(x => x == "/seed");
+            if (seed) args = args.Except(new[] { "/seed" }).ToArray();
+            if (seed)
+            {
+                var seedConfig = host.Services.GetRequiredService<IConfiguration>();
+                var connectionString = seedConfig.GetConnectionString("DefaultConnection");
+                SeedData.EnsureSeedData(connectionString);
+                return;
+            }
 
             host.Run();
         }

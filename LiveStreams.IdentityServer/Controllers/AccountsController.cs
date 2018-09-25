@@ -13,7 +13,6 @@ using Microsoft.Extensions.Options;
 using LiveStreams.IdentityServer.Models;
 using LiveStreams.IdentityServer.Models.AccountViewModels;
 using LiveStreams.IdentityServer.Services;
-using IdentityServer4.Quickstart.UI;
 using IdentityServer4.Services;
 using IdentityServer4.Stores;
 using Microsoft.AspNetCore.Http;

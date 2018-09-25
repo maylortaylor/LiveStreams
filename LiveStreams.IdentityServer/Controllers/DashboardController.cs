@@ -1,7 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using IdentityServer4.Services;
-using IdentityServer4.Quickstart.UI;
 using System.Security.Claims;
 using LiveStreams.IdentityServer.Data;
 using Microsoft.AspNetCore.Identity;

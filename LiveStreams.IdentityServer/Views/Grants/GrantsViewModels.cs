@@ -1,8 +1,9 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
-namespace IdentityServer4.Quickstart.UI
+namespace LiveStreams.IdentityServer.Models
 {
+
     public class GrantsViewModel
     {
         public IEnumerable<GrantViewModel> Grants { get; set; }

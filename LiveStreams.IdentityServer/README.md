@@ -15,6 +15,11 @@ Next, add a new migration
 
     dotnet ef database update
 
+## Seed the database
+
+    dotnet run /seed
+    // look at Program.cs for SeedData logic
+
 ## Helpful
 
     dotnet ef migrations list

@@ -20,6 +20,7 @@ using System;
 using LiveStreams.IdentityServer.Helpers;
 using LiveStreams.IdentityServer.Auth;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.SpaServices.AngularCli;
 
 namespace LiveStreams.IdentityServer
 {
