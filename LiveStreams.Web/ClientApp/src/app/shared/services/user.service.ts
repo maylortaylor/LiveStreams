@@ -64,6 +64,7 @@ export class UserService extends BaseService {
       localStorage.setItem('auth_token', res.auth_token);
       this.loggedIn = true;
       this._authNavStatusSource.next(true);
+      location.reload();
       return true;
     });
   }
@@ -72,6 +73,7 @@ export class UserService extends BaseService {
     localStorage.removeItem('auth_token');
     this.loggedIn = false;
     this._authNavStatusSource.next(false);
+    location.reload();
   }
 
   isLoggedIn() {
@@ -96,6 +98,7 @@ export class UserService extends BaseService {
         localStorage.setItem('auth_token', res.auth_token);
         this.loggedIn = true;
         this._authNavStatusSource.next(true);
+        location.reload();
         return true;
       })
       .catch(this.handleError);
