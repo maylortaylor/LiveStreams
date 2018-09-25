@@ -11,6 +11,8 @@
 **/certificate.staging.json
 **/certificate.production.json
 
+*.pfx
+
 # User-specific files
 *.suo
 *.user

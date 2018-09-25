@@ -31,7 +31,7 @@ export class RegistrationFormComponent implements OnInit {
         )
         .then(res => {
           if (res) {
-            this.router.navigate(['/login'], {
+            this.router.navigate(['/account/login'], {
               queryParams: {brandNew: true, email: value.email}
             });
           }

@@ -16,7 +16,6 @@ namespace LiveStreams.Web
     {
         public static void Main(string[] args)
         {
-            // CreateWebHostBuilder(args).Build().Run();
             var config = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddEnvironmentVariables()
@@ -31,28 +30,47 @@ namespace LiveStreams.Web
             var certificate = new X509Certificate2(certificateFileName, certificatePassword);
 
 
-            var host = new WebHostBuilder()
-                        .UseKestrel(
-                            options =>
-                            {
-                                options.AddServerHeader = false;
-                                options.Listen(IPAddress.Loopback, 5002, listenOptions =>
-                                {
-                                    listenOptions.UseHttps(certificate);
-                                });
-                            }
-                        )
-                        .UseConfiguration(config)
-                        .UseContentRoot(Directory.GetCurrentDirectory())
-                        .UseStartup<Startup>()
-                        .UseUrls("https://localhost:5002")
-                        .Build();
+            // var host = new WebHostBuilder()
+            //             .UseKestrel(
+            //                 options =>
+            //                 {
+            //                     options.AddServerHeader = false;
+            //                     options.Listen(IPAddress.Loopback, 5002, listenOptions =>
+            //                     {
+            //                         listenOptions.UseHttps(certificate);
+            //                     });
+            //                 }
+            //             )
+            //             .UseConfiguration(config)
+            //             .UseContentRoot(Directory.GetCurrentDirectory())
+            //             .UseStartup<Startup>()
+            //             .UseUrls("https://localhost:5002")
+            //             .Build();
 
-            host.Run();
+            CreateWebHostBuilder(args, config, certificate).Build().Run();
         }
 
-        public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
-            WebHost.CreateDefaultBuilder(args)
-                .UseStartup<Startup>();
+        public static IWebHostBuilder CreateWebHostBuilder(string[] args,
+            IConfigurationRoot config,
+            X509Certificate2 certificate) =>
+                WebHost.CreateDefaultBuilder(args)
+                    .UseKestrel(options =>
+                    {
+                        options.AddServerHeader = false;
+                        options.Listen(IPAddress.Loopback, 5002, listenOptions =>
+                        {
+                            listenOptions.UseHttps(certificate);
+                        });
+                    })
+                   .ConfigureLogging((hostingContext, logging) =>
+                    {
+                        logging.AddConfiguration(hostingContext.Configuration.GetSection("Logging"));
+                        logging.AddConsole();
+                        logging.AddDebug();
+                    })
+                    .UseContentRoot(Directory.GetCurrentDirectory())
+                    .UseConfiguration(config)
+                    .UseUrls("https://localhost:5002")
+                    .UseStartup<Startup>();
     }
 }

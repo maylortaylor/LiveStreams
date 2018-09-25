@@ -16,13 +16,26 @@ namespace LiveStreams.Api
     {
         public IConfiguration Configuration { get; }
 
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, IHostingEnvironment env)
         {
-            Configuration = configuration;
+            var builder = new ConfigurationBuilder()
+                .SetBasePath(env.ContentRootPath)
+                // .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+                .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
+                .AddEnvironmentVariables();
+
+            Configuration = builder.Build();
         }
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddMvc(options =>
+            {
+                options.SslPort = 5069;
+                options.Filters.Add(new RequireHttpsAttribute());
+            }
+            ).SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+
             var connectionString = Configuration.GetConnectionString("DefaultConnection");
             services.AddSingleton(_ => Configuration);
 
@@ -68,15 +81,7 @@ namespace LiveStreams.Api
             //     o.RequireHttpsMetadata = false;
             // });
 
-
-
-            // add cors globally
-            // services.Configure<MvcOptions>(options =>
-            // {
-            //     options.Filters.Add(new CorsAuthorizationFilterFactory("Access-Control-Allow-Origin"));
-            // });
-
-            // // Add Swagger Auto Document Generation service
+            // Add Swagger Auto Document Generation service
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new Info
@@ -98,8 +103,6 @@ namespace LiveStreams.Api
                 // var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 // c.IncludeXmlComments(xmlPath);
             });
-            services.AddMvc()
-                .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
 
         public void Configure(

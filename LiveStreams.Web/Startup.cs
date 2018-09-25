@@ -15,23 +15,22 @@ namespace LiveStreams.Web
 {
     public class Startup
     {
+        public IConfiguration Configuration { get; }
         public Startup(IConfiguration configuration, IHostingEnvironment env)
         {
             var builder = new ConfigurationBuilder()
                 .SetBasePath(env.ContentRootPath)
-                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+                // .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
                 .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
                 .AddEnvironmentVariables();
 
             Configuration = builder.Build();
         }
 
-        public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
             services.AddMvc(options =>
             {
                 options.SslPort = 5002;
