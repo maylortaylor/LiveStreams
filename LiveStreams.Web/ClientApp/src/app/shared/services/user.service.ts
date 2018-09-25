@@ -11,16 +11,11 @@ import {BaseService} from './base.service';
 
 import {Observable, BehaviorSubject} from 'rxjs';
 
-// Add the RxJS Observable operators we need in this app.
-// import '../../rxjs-operators';
-
 @Injectable()
 export class UserService extends BaseService {
   baseUrl: string = '';
 
-  // Observable navItem source
   private _authNavStatusSource = new BehaviorSubject<boolean>(false);
-  // Observable navItem stream
   authNavStatus$ = this._authNavStatusSource.asObservable();
 
   private loggedIn = false;
@@ -45,21 +40,14 @@ export class UserService extends BaseService {
     location: string
   ): Promise<UserRegistration> {
     let body = JSON.stringify({email, password, firstName, lastName, location});
-    // let headers = new Headers({'Content-Type': 'application/json'});
-    // let options = new RequestOptions({headers: headers});
 
     let opts: GetOptions = {
-      baseUrl: 'http://localhost:5050/api',
+      baseUrl: 'https://localhost:5050/api',
       url: '/accounts',
       params: body
     };
 
     return this.http.post<UserRegistration>(opts);
-
-    // return this.http
-    //   .post(this.baseUrl + '/accounts', body, options)
-    //   .map(res => true)
-    //   .catch(this.handleError);
   }
 
   login(userName, password) {
@@ -67,11 +55,9 @@ export class UserService extends BaseService {
     headers.append('Content-Type', 'application/json');
 
     let options: GetOptions = {
-      baseUrl: 'http://localhost:5050/api',
+      baseUrl: 'https://localhost:5050/api',
       url: '/auth/login',
       params: JSON.stringify({userName, password})
-      // headers: {'Access-Control-Allow-Origin': 'http://localhost:5050'}
-      // params: body
     };
     return this.http.post(options).then((res: any) => {
       debugger;
@@ -80,21 +66,6 @@ export class UserService extends BaseService {
       this._authNavStatusSource.next(true);
       return true;
     });
-
-    // return this.http
-    //   .post(
-    //     this.baseUrl + '/auth/login',
-    //     JSON.stringify({userName, password}),
-    //     {headers}
-    //   )
-    //   .map(res => res.json())
-    //   .map(res => {
-    //     localStorage.setItem('auth_token', res.auth_token);
-    //     this.loggedIn = true;
-    //     this._authNavStatusSource.next(true);
-    //     return true;
-    //   })
-    //   .catch(this.handleError);
   }
 
   logout() {
@@ -128,16 +99,5 @@ export class UserService extends BaseService {
         return true;
       })
       .catch(this.handleError);
-
-    // return this.http
-    //   .post(this.baseUrl + '/externalauth/facebook', body, {headers})
-    //   .map(res => res.json())
-    //   .map(res => {
-    //     localStorage.setItem('auth_token', res.auth_token);
-    //     this.loggedIn = true;
-    //     this._authNavStatusSource.next(true);
-    //     return true;
-    //   })
-    //   .catch(this.handleError);
   }
 }
