@@ -17,6 +17,7 @@ export class LoginFormComponent implements OnInit {
   isRequesting: boolean;
   submitted: boolean = false;
   credentials: Credentials = {email: '', password: ''};
+  showPassword: boolean;
   constructor(
     private userService: UserService,
     private router: Router,
@@ -36,6 +37,10 @@ export class LoginFormComponent implements OnInit {
   ngOnDestroy() {
     // prevent memory leak by unsubscribing
     this.subscription.unsubscribe();
+  }
+
+  togglePassword() {
+    this.showPassword = !this.showPassword;
   }
   login({value, valid}: {value: Credentials; valid: boolean}) {
     this.submitted = true;

@@ -17,10 +17,20 @@
           #email="ngModel" tmFocus validateEmail>
         <small [hidden]="email.valid || (email.pristine && !submitted)" class="text-danger">Please enter a valid email</small>
       </div>
+
       <div class="form-group">
         <label for="password">Password</label>
-        <input type="password" class="form-control" id="password" required name="password" placeholder="Password"
-          ngModel>
+
+        <div class="input-group">
+          <input [attr.type]="showPassword ? 'text' : 'password'" type="password" class="form-control" id="password"
+            required name="password" placeholder="Password" ngModel>
+          <div class="input-group-append">
+            <button (click)="togglePassword()" class="btn btn-outline-secondary" type="button">
+              <i *ngIf="!showPassword" class="far fa-eye-slash"></i>
+              <i *ngIf="showPassword" class="far fa-eye"></i>
+            </button>
+          </div>
+        </div>
       </div>
 
       <div class="form-group">
