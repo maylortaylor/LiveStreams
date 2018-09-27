@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "sample": {
+    "live-streams": {
       "root": "",
       "sourceRoot": "src",
       "projectType": "application",
@@ -45,18 +45,20 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "sample:build"
+            "browserTarget": "live-streams:build",
+            "host": "localhost",
+            "port": 6969
           },
           "configurations": {
             "production": {
-              "browserTarget": "sample:build:production"
+              "browserTarget": "live-streams:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "sample:build"
+            "browserTarget": "live-streams:build"
           }
         },
         "test": {
@@ -80,7 +82,7 @@
         }
       }
     },
-    "sample-e2e": {
+    "live-streams-e2e": {
       "root": "e2e/",
       "projectType": "application",
       "architect": {
@@ -88,7 +90,7 @@
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
             "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "sample:serve"
+            "devServerTarget": "live-streams:serve"
           }
         },
         "lint": {
@@ -101,5 +103,5 @@
       }
     }
   },
-  "defaultProject": "sample"
+  "defaultProject": "live-streams"
 }

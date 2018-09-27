@@ -10,6 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Swashbuckle.AspNetCore.Swagger;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Http;
+// using Microsoft.AspNetCore.SpaServices.Webpack;
 
 namespace LiveStreams.Web
 {
@@ -122,6 +123,10 @@ namespace LiveStreams.Web
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                // app.UseWebpackDevMiddleware(new WebpackDevMiddlewareOptions
+                // {
+                //     HotModuleReplacement = true
+                // });
                 app.UseSwagger();
                 app.UseSwaggerUI(c =>
                 {

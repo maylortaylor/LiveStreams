@@ -14,6 +14,7 @@ import {Observable, BehaviorSubject} from 'rxjs';
 @Injectable()
 export class UserService extends BaseService {
   baseUrl: string = '';
+  authUrl: string = '';
 
   private _authNavStatusSource = new BehaviorSubject<boolean>(false);
   authNavStatus$ = this._authNavStatusSource.asObservable();
@@ -30,6 +31,7 @@ export class UserService extends BaseService {
     // header component resulting in authed user nav links disappearing despite the fact user is still logged in
     this._authNavStatusSource.next(this.loggedIn);
     this.baseUrl = configService.getApiURI();
+    this.authUrl = configService.getAuthURI();
   }
 
   register(
@@ -42,8 +44,8 @@ export class UserService extends BaseService {
     let body = JSON.stringify({email, password, firstName, lastName, location});
 
     let opts: GetOptions = {
-      baseUrl: 'https://localhost:5050/api',
-      url: '/accounts',
+      baseUrl: this.authUrl,
+      url: 'auth/accounts',
       params: body
     };
 
@@ -55,8 +57,8 @@ export class UserService extends BaseService {
     headers.append('Content-Type', 'application/json');
 
     let options: GetOptions = {
-      baseUrl: 'https://localhost:5050/api',
-      url: '/auth/login',
+      baseUrl: this.authUrl,
+      url: 'auth/login',
       params: JSON.stringify({userName, password})
     };
     return this.http.post(options).then((res: any) => {
@@ -87,7 +89,7 @@ export class UserService extends BaseService {
 
     let options: GetOptions = {
       baseUrl: '',
-      url: this.baseUrl + '/externalauth/facebook',
+      url: this.authUrl + '/externalauth/facebook',
       params: body,
       headers: {'Content-Type': 'application/json'}
     };

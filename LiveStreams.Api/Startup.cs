@@ -39,29 +39,18 @@ namespace LiveStreams.Api
             var connectionString = Configuration.GetConnectionString("DefaultConnection");
             services.AddSingleton(_ => Configuration);
 
-            // services.Configure<MvcOptions>(options =>
-            // {
-            //     options.Filters.Add(new CorsAuthorizationFilterFactory("AllowSpecificOrigin"));
-            // });
             // services.AddCors(options =>
             // {
-            //     options.AddPolicy("AllowSpecificOrigin",
-            //         builder => builder.WithOrigins("http://localhost:5000").AllowAnyHeader()
-            //         .AllowAnyMethod());
+            //     options.AddPolicy("Access-Control-Allow-Origin",
+            //         builder =>
+            //         {
+            //             builder
+            //             .AllowAnyOrigin()
+            //             .AllowAnyMethod()
+            //             .AllowAnyHeader()
+            //             .AllowCredentials();
+            //         });
             // });
-
-            services.AddCors(options =>
-            {
-                options.AddPolicy("Access-Control-Allow-Origin",
-                    builder =>
-                    {
-                        builder
-                        .AllowAnyOrigin()
-                        .AllowAnyMethod()
-                        .AllowAnyHeader()
-                        .AllowCredentials();
-                    });
-            });
 
             services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
             .AddIdentityServerAuthentication(options =>
@@ -118,10 +107,12 @@ namespace LiveStreams.Api
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+
                 // Enable middleware to serve generated Swagger as a JSON endpoint.
                 app.UseSwagger();
 
-                app.UseCors("Access-Control-Allow-Origin");
+                // app.UseCors("Access-Control-Allow-Origin");
+
                 // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.), 
                 // specifying the Swagger JSON endpoint.
                 app.UseSwaggerUI(c =>
