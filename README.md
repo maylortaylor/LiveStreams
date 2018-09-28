@@ -103,7 +103,7 @@ This will run the API on [https://localhost:5050/api](https://localhost:5050/api
 
 This will run the ID4 server on [https://localhost:5050](https://localhost:5050)
 
-# ========================
+# ============================================
 
 # `ASP.NET Core` + `Angular 6.1` + `API server` + `IdentityServer 4` + `SwaggerUI`
 
