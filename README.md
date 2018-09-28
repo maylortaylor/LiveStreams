@@ -1,4 +1,4 @@
-# .NET CORE 2.1 & Angular 6.1.6 Web Application
+# `ASP.NET CORE 2.1` && `Angular 6.1.6 Web Application` && `Identity Server 4`
 
 Made with help from [this github](https://github.com/elanderson/Angular-Core-IdentityServer)
 
@@ -76,7 +76,7 @@ This will run the Web application at [https://localhost:5002](https://localhost:
 
 This will run the API on [https://localhost:5050/api](https://localhost:5050/api)
 
-# `LiveStreams.IdentityServer` Project
+# #3 `LiveStreams.IdentityServer` Project
 
 ## In your 3rd terminal/command prompt
 
@@ -103,6 +103,8 @@ This will run the API on [https://localhost:5050/api](https://localhost:5050/api
 
 This will run the ID4 server on [https://localhost:5050](https://localhost:5050)
 
+# ========================
+
 # `ASP.NET Core` + `Angular 6.1` + `API server` + `IdentityServer 4` + `SwaggerUI`
 
 This solution has 3 projects.
@@ -127,7 +129,7 @@ Then using:
 
         dotnet new is4aspid
 
-3. **`LiveStreams.Web`** --> Intended to be the Web Client project. This serves the Angular 6 application. It runs locally on [https://localhost:5002](https://localhost:5002)
+3. **`LiveStreams.Web`** --> Intended to be the Web Client project. This serves the Angular 6.1 application. It runs locally on [https://localhost:5002](https://localhost:5002)
 
 Restore dependencies:
 

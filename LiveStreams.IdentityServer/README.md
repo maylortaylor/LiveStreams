@@ -5,7 +5,7 @@
 # Database / Migrations
 
 Start by `deleting your _EF Migrations table` if you have one.
-Next delete the migrationsin your `src/Migrations` folder.
+Next delete the migrations in your `./{root}/Migrations` folder.
 
 Next, add a new migration
 
