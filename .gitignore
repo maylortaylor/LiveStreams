@@ -12,6 +12,7 @@
 **/certificate.production.json
 
 .angulardoc.json
+
 *.pfx
 
 # User-specific files
