@@ -113,31 +113,43 @@ This solution has 3 projects.
 
 Restore dependencies:
 
+```
         dotnet restore
+```
 
 Run before using project
 
+```
         dotnet run
+```
 
 2. **`LiveStreams.IdentityServer`** --> Templated from the [dotnet templates](https://github.com/IdentityServer/IdentityServer4.Templates)
 
 Install with:
 
+```
         dotnet new -i identityserver4.templates
+```
 
 Then using:
 
+```
         dotnet new is4aspid
+```
 
 3. **`LiveStreams.Web`** --> Intended to be the Web Client project. This serves the Angular 6.1 application. It runs locally on [https://localhost:5002](https://localhost:5002)
 
 Restore dependencies:
 
+```
         dotnet restore
+```
 
 Run before using project
 
+```
         dotnet run
+```
 
 # Being Safe And Secure
 
